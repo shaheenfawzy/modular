@@ -49,7 +49,7 @@ class ModulesSync extends Command
 			return;
 		}
 		
-		$modules_directory = config('app-modules.modules_directory', 'app-modules');
+		$modules_directory = config('modular.modules_directory', 'app-modules');
 		
 		$config = simplexml_load_string($this->filesystem->get($config_path));
 		

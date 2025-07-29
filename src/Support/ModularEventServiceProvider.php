@@ -44,7 +44,7 @@ class ModularEventServiceProvider extends ServiceProvider
 	
 	public function shouldDiscoverEvents(): bool
 	{
-		return config('app-modules.should_discover_events')
+		return config('modular.should_discover_events')
 			?? $this->appIsConfiguredToDiscoverEvents();
 	}
 	

@@ -86,8 +86,8 @@ class MakeModule extends Command
 	{
 		$this->module_name = Str::kebab($this->argument('name'));
 		$this->class_name_prefix = Str::studly($this->argument('name'));
-		$this->module_namespace = config('app-modules.modules_namespace', 'Modules');
-		$this->composer_namespace = config('app-modules.modules_vendor') ?? Str::kebab($this->module_namespace);
+		$this->module_namespace = config('modular.modules_namespace', 'Modules');
+		$this->composer_namespace = config('modular.modules_vendor') ?? Str::kebab($this->module_namespace);
 		$this->composer_name = "{$this->composer_namespace}/{$this->module_name}";
 		$this->base_path = $this->module_registry->getModulesPath().'/'.$this->module_name;
 		
@@ -156,7 +156,7 @@ class MakeModule extends Command
 	{
 		$this->title('Creating initial module files');
 		
-		$tests_base = config('app-modules.tests_base', 'Tests\TestCase');
+		$tests_base = config('modular.tests_base', 'Tests\TestCase');
 		
 		$placeholders = [
 			'StubBasePath' => $this->base_path,
@@ -226,7 +226,7 @@ class MakeModule extends Command
 		
 		$module_config = [
 			'type' => 'path',
-			'url' => str_replace('\\', '/', config('app-modules.modules_directory', 'app-modules')).'/*',
+			'url' => str_replace('\\', '/', config('modular.modules_directory', 'app-modules')).'/*',
 			'options' => [
 				'symlink' => true,
 			],
@@ -322,7 +322,7 @@ class MakeModule extends Command
 	
 	protected function getStubs(): array
 	{
-		if (is_array($custom_stubs = config('app-modules.stubs'))) {
+		if (is_array($custom_stubs = config('modular.stubs'))) {
 			return $custom_stubs;
 		}
 		

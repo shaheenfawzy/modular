@@ -14,8 +14,8 @@ class WorkspaceWriter extends ConfigWriter
 			return true;
 		}
 		
-		$namespace = config('app-modules.modules_namespace', 'Modules');
-		$vendor = config('app-modules.modules_vendor') ?? Str::kebab($namespace);
+		$namespace = config('modular.modules_namespace', 'Modules');
+		$vendor = config('modular.modules_vendor') ?? Str::kebab($namespace);
 		$module_paths = $this->module_registry->modules()
 			->map(function(ModuleConfig $module) use (&$config, $vendor) {
 				return '$PROJECT_DIR$/vendor/'.$vendor.'/'.$module->name;

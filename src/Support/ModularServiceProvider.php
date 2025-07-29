@@ -98,7 +98,7 @@ class ModularServiceProvider extends ServiceProvider
 	protected function publishVendorFiles(): void
 	{
 		$this->publishes([
-			"{$this->base_dir}/config.php" => $this->app->configPath('app-modules.php'),
+			"{$this->base_dir}/config.php" => $this->app->configPath('modular.php'),
 		], 'modular-config');
 	}
 	
