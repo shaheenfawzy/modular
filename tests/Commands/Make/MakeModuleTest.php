@@ -67,7 +67,7 @@ class MakeModuleTest extends TestCase
 		
 		$module_name = 'test-module';
 		
-		config()->set('app-modules.stubs', [
+		config()->set('modular.stubs', [
 			'src/StubClassNamePrefixInfo.php' => str_replace('\\', '/', dirname(__DIR__, 2)).'/stubs/test-stub.php',
 		]);
 		

@@ -321,7 +321,7 @@ class ModularServiceProvider extends ServiceProvider
 	protected function getModulesBasePath(): string
 	{
 		if (null === $this->modules_path) {
-			$directory_name = $this->app->make('config')->get('app-modules.modules_directory', 'app-modules');
+			$directory_name = $this->app->make('config')->get('modular.modules_directory', 'app-modules');
 			$this->modules_path = str_replace('\\', '/', $this->app->basePath($directory_name));
 		}
 		
