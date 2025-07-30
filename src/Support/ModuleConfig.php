@@ -18,7 +18,8 @@ class ModuleConfig implements Arrayable
 		
 		$base_path = rtrim(str_replace('\\', '/', $composer_file->getPath()), '/');
 		
-		$name = basename($base_path);
+		$modules_directory = config('modular.modules_directory');
+		$name = str($base_path)->after("{$modules_directory}/")->replace('/', '-');
 		
 		$namespaces = Collection::make($composer_config['autoload']['psr-4'] ?? [])
 			->mapWithKeys(function($src, $namespace) use ($base_path) {

@@ -89,7 +89,7 @@ class ModuleRegistry
 		}
 		
 		return FinderCollection::forFiles()
-			->depth('== 1')
+			->depth('== 2')
 			->name('composer.json')
 			->in($this->modules_path)
 			->collect()

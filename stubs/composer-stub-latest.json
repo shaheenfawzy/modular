@@ -7,17 +7,17 @@
 	"require": {},
 	"autoload": {
 		"psr-4": {
-			"StubModuleNamespace\\StubClassNamePrefix\\": "src/",
-			"StubModuleNamespace\\StubClassNamePrefix\\Tests\\": "tests/",
-			"StubModuleNamespace\\StubClassNamePrefix\\Database\\Factories\\": "database/factories/",
-			"StubModuleNamespace\\StubClassNamePrefix\\Database\\Seeders\\": "database/seeders/"
+			"StubModuleNamespace\\StubComposerModuleNamespace\\": "src/",
+			"StubModuleNamespace\\StubComposerModuleNamespace\\Tests\\": "tests/",
+			"StubModuleNamespace\\StubComposerModuleNamespace\\Database\\Factories\\": "database/factories/",
+			"StubModuleNamespace\\StubComposerModuleNamespace\\Database\\Seeders\\": "database/seeders/"
 		}
 	},
 	"minimum-stability": "stable",
 	"extra": {
 		"laravel": {
 			"providers": [
-				"StubModuleNamespace\\StubClassNamePrefix\\Providers\\StubClassNamePrefixServiceProvider"
+				"StubModuleNamespace\\StubComposerModuleNamespace\\Providers\\StubClassNamePrefixServiceProvider"
 			]
 		}
 	}

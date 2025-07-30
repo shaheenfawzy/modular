@@ -45,8 +45,10 @@ class ModularServiceProvider extends ServiceProvider
 	
 	public function register(): void
 	{
-		$this->mergeConfigFrom("{$this->base_dir}/config.php", 'app-modules');
+		$this->mergeConfigFrom("{$this->base_dir}/config.php", 'modular');
 		
+		$this->app->alias(ModuleRegistry::class, 'modules');
+
 		$this->app->singleton(ModuleRegistry::class, function() {
 			return new ModuleRegistry(
 				$this->getModulesBasePath(),
@@ -321,7 +323,7 @@ class ModularServiceProvider extends ServiceProvider
 	protected function getModulesBasePath(): string
 	{
 		if (null === $this->modules_path) {
-			$directory_name = $this->app->make('config')->get('modular.modules_directory', 'app-modules');
+			$directory_name = $this->app->make('config')->get('modular.modules_directory', 'modules');
 			$this->modules_path = str_replace('\\', '/', $this->app->basePath($directory_name));
 		}
 		

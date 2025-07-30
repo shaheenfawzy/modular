@@ -1,6 +1,6 @@
 <?php
 
-namespace StubModuleNamespace\StubClassNamePrefix\Providers;
+namespace StubModuleNamespace\StubNamespace\Providers;
 
 use Illuminate\Support\ServiceProvider;
 

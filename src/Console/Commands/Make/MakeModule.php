@@ -8,6 +8,7 @@ use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Support\Stringable;
 use InterNACHI\Modular\Console\Commands\ModulesClear;
 use InterNACHI\Modular\Support\ModuleRegistry;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
@@ -17,6 +18,7 @@ class MakeModule extends Command
 {
 	protected $signature = 'make:module
 		{name : The name of the module}
+		{group? : The name of the module group}
 		{--accept-default-namespace : Skip default namespace confirmation}';
 	
 	protected $description = 'Create a new Laravel module';
@@ -34,6 +36,8 @@ class MakeModule extends Command
 	 * @var string
 	 */
 	protected $module_namespace;
+
+	protected $namespace;
 	
 	/**
 	 * This is the composer namespace for all modules
@@ -48,6 +52,13 @@ class MakeModule extends Command
 	 * @var string
 	 */
 	protected $module_name;
+
+	/**
+	 * This is the name of the module group
+	 *
+	 * @var string
+	 */
+	protected $module_group;
 	
 	/**
 	 * This is the module name as a StudlyCase'd name
@@ -84,13 +95,30 @@ class MakeModule extends Command
 	
 	public function handle()
 	{
-		$this->module_name = Str::kebab($this->argument('name'));
-		$this->class_name_prefix = Str::studly($this->argument('name'));
+		$name = str($this->argument('name'));
+		$group = str($this->argument('group'));
+
+		$this->module_name = $name->kebab();
+		$this->module_group = $group->kebab();
+		$this->class_name_prefix = $group->isNotEmpty()
+			? $group->studly()->append($name->studly())
+			: $name->studly();
 		$this->module_namespace = config('modular.modules_namespace', 'Modules');
+		$this->namespace = $group->isNotEmpty()
+			? $group->studly()->append("\\{$name->studly()}")
+			: $name->studly();
 		$this->composer_namespace = config('modular.modules_vendor') ?? Str::kebab($this->module_namespace);
-		$this->composer_name = "{$this->composer_namespace}/{$this->module_name}";
-		$this->base_path = $this->module_registry->getModulesPath().'/'.$this->module_name;
-		
+		$this->composer_name = "{$this->composer_namespace}".'/'.($group->isNotEmpty()
+			? $group->append("-{$name}")
+			: $name
+		);
+
+		$this->base_path = str($this->module_registry->getModulesPath())
+			->when($this->module_group !== null, callback: fn (Stringable $str) =>
+				$str->append("/{$this->module_group}/")
+			)
+			->append($this->module_name);
+
 		$this->setUpStyles();
 		
 		$this->newLine();
@@ -161,6 +189,8 @@ class MakeModule extends Command
 		$placeholders = [
 			'StubBasePath' => $this->base_path,
 			'StubModuleNamespace' => $this->module_namespace,
+			'StubNamespace' => $this->namespace,
+			'StubComposerModuleNamespace' => $this->namespace->replace('\\','\\\\'),
 			'StubComposerNamespace' => $this->composer_namespace,
 			'StubModuleNameSingular' => Str::singular($this->module_name),
 			'StubModuleNamePlural' => Str::plural($this->module_name),
@@ -226,7 +256,7 @@ class MakeModule extends Command
 		
 		$module_config = [
 			'type' => 'path',
-			'url' => str_replace('\\', '/', config('modular.modules_directory', 'app-modules')).'/*',
+			'url' => str_replace('\\', '/', config('modular.modules_directory', 'modules')).'/*/*',
 			'options' => [
 				'symlink' => true,
 			],
@@ -254,7 +284,7 @@ class MakeModule extends Command
 			$this->line(" - Adding require statement for <info>{$this->composer_name}:*</info>");
 			$has_changes = true;
 			
-			$definition['require']["{$this->composer_namespace}/{$this->module_name}"] = '*';
+			$definition['require'][$this->composer_name] = '*';
 			$definition['require'] = $this->sortComposerPackages($definition['require']);
 		}
 		
@@ -333,13 +363,6 @@ class MakeModule extends Command
 		return [
 			'composer.json' => $this->pathToStub($composer_stub),
 			'src/Providers/StubClassNamePrefixServiceProvider.php' => $this->pathToStub('ServiceProvider.php'),
-			'tests/Feature/Providers/StubClassNamePrefixServiceProviderTest.php' => $this->pathToStub('ServiceProviderTest.php'),
-			'database/migrations/StubMigrationPrefix_set_up_StubModuleName_module.php' => $this->pathToStub('migration.php'),
-			'routes/StubModuleName-routes.php' => $this->pathToStub('web-routes.php'),
-			'resources/views/index.blade.php' => $this->pathToStub('view.blade.php'),
-			'resources/views/create.blade.php' => $this->pathToStub('view.blade.php'),
-			'resources/views/show.blade.php' => $this->pathToStub('view.blade.php'),
-			'resources/views/edit.blade.php' => $this->pathToStub('view.blade.php'),
 			'database/factories/.gitkeep' => $this->pathToStub('.gitkeep'),
 			'database/migrations/.gitkeep' => $this->pathToStub('.gitkeep'),
 			'database/'.$this->seedersDirectory().'/.gitkeep' => $this->pathToStub('.gitkeep'),
