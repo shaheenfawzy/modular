@@ -128,6 +128,7 @@ class MakeModule extends Command
 		}
 
 		$this->ensureModulesDirectoryExists();
+		$this->createSkeletonDirectories();
 
 		$this->writeStubs();
 		$this->updateCoreComposerConfig();
@@ -177,6 +178,27 @@ class MakeModule extends Command
 		if (! $this->filesystem->isDirectory($this->base_path)) {
 			$this->filesystem->makeDirectory($this->base_path, 0777, true);
 			$this->line(" - Created <info>{$this->base_path}</info>");
+		}
+	}
+
+	protected function createSkeletonDirectories(): void
+	{
+		$directories = config('modular.skeleton');
+
+		foreach ($directories as $directory => $generate) {
+			if (! $generate) {
+				continue;
+			}
+
+			$this->filesystem->ensureDirectoryExists("{$this->base_path}/$directory");
+			$createdDirectory = str(config('modular.modules_directory'))
+				->when($this->module_group !== null, fn ($str) => 
+					$str->append("/{$this->module_group}")
+				)
+				->append("/{$this->module_name}")
+				->append("/{$directory}");
+
+			$this->line(" - Created directory <info>{$createdDirectory}</info>");
 		}
 	}
 	
