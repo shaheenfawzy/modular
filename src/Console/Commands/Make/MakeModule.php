@@ -18,7 +18,7 @@ class MakeModule extends Command
 {
 	protected $signature = 'make:module
 		{name : The name of the module}
-		{group? : The name of the module group}
+		{group : The name of the module group}
 		{--accept-default-namespace : Skip default namespace confirmation}';
 	
 	protected $description = 'Create a new Laravel module';
