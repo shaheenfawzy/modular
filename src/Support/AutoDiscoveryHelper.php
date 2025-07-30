@@ -34,8 +34,8 @@ class AutoDiscoveryHelper
 	{
 		return FinderCollection::forDirectories()
 			->depth(0)
-			->name('migrations')
-			->inOrEmpty($this->base_path.'/*/*/database/');
+			->name('landlord')
+			->inOrEmpty($this->base_path.'/*/*/database/migrations/');
 	}
 	
 	public function modelFileFinder(): FinderCollection
