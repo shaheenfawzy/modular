@@ -111,7 +111,7 @@ class ModuleRegistry
 		} elseif (Str::startsWith($path, $modules_real_path = str_replace('\\', '/', realpath($this->modules_path)))) {
 			$path = trim(Str::after($path, $modules_real_path), '/');
 		}
-		
-		return explode('/', $path)[0];
+
+		return implode('-', array_slice(explode('/', $path), 0, 2));
 	}
 }
